@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Checkout</title>
+  <style>
+    /* ---------- Base ---------- */
+   
+/* ============================
+   THEME VARIABLES
+============================ */
+:root {
+  --bg: #fff7ed;
+  --card: rgba(255, 255, 255, 0.95);
+  --border: rgba(251, 191, 36, 0.35);
+
+  --text: #431407;
+  --muted: #9a3412;
+
+  --primary: #f97316;
+  --primary-dark: #ea580c;
+  --primary-glow: rgba(249, 115, 22, 0.45);
+
+  --success-bg: #ecfdf5;
+  --success-text: #166534;
+
+  --error-bg: #fef2f2;
+  --error-text: #7f1d1d;
+}
+
+/* ============================
+   BASE
+============================ */
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont;
+  background:
+    radial-gradient(circle at top left, #ffedd5, transparent 45%),
+    radial-gradient(circle at bottom right, #fde68a, transparent 45%),
+    var(--bg);
+  color: var(--text);
+}
+
+/* ============================
+   CHECKOUT CARD
+============================ */
+[data-test-id="checkout-container"] {
+  max-width: 420px;
+  margin: 70px auto;
+  background: var(--card);
+  backdrop-filter: blur(12px);
+  border-radius: 18px;
+  padding: 26px;
+  border: 1px solid var(--border);
+  box-shadow: 0 20px 60px rgba(249, 115, 22, 0.25);
+  animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================
+   HEADINGS
+============================ */
+h2 {
+  margin: 0 0 16px;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+/* ============================
+   ORDER SUMMARY
+============================ */
+[data-test-id="order-summary"] {
+  border-bottom: 1px dashed var(--border);
+  padding-bottom: 16px;
+}
+
+[data-test-id="order-summary"] div {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  margin-bottom: 8px;
+  color: var(--muted);
+}
+
+/* ============================
+   PAYMENT METHODS
+============================ */
+[data-test-id="payment-methods"] {
+  display: flex;
+  gap: 12px;
+  margin: 22px 0;
+}
+
+[data-test-id="payment-methods"] button {
+  flex: 1;
+  background: #fff7ed;
+  color: var(--text);
+  border: 1px solid var(--border);
+  font-weight: 600;
+  border-radius: 12px;
+  transition: all 0.25s ease;
+}
+
+[data-test-id="payment-methods"] button:hover {
+  background: #ffedd5;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(249, 115, 22, 0.25);
+}
+
+/* ============================
+   BUTTONS
+============================ */
+button {
+  padding: 12px 14px;
+  background: linear-gradient(135deg, #fb923c, #f97316);
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 700;
+  transition: all 0.25s ease;
+  box-shadow: 0 10px 26px var(--primary-glow);
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 42px rgba(249, 115, 22, 0.55);
+}
+
+button:active {
+  transform: scale(0.97);
+}
+
+/* ============================
+   FORMS
+============================ */
+form {
+  margin-top: 16px;
+  padding: 18px;
+  background: #fff7ed;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+}
+
+input {
+  width: 100%;
+  padding: 11px 13px;
+  margin-bottom: 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  font-size: 14px;
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.25);
+}
+
+/* ============================
+   STATES
+============================ */
+[data-test-id="processing-state"],
+[data-test-id="success-state"],
+[data-test-id="error-state"] {
+  margin-top: 22px;
+  text-align: center;
+  padding: 22px;
+  border-radius: 16px;
+  animation: fadeIn 0.3s ease;
+}
+
+/* Processing */
+[data-test-id="processing-state"] {
+  background: #fff7ed;
+}
+
+/* Success */
+[data-test-id="success-state"] {
+  background: var(--success-bg);
+  border: 1px solid #86efac;
+}
+
+[data-test-id="success-state"] h2 {
+  color: var(--success-text);
+}
+
+/* Error */
+[data-test-id="error-state"] {
+  background: var(--error-bg);
+  border: 1px solid #fecaca;
+}
+
+[data-test-id="error-state"] h2 {
+  color: var(--error-text);
+}
+
+/* ============================
+   SPINNER
+============================ */
+.spinner {
+  width: 30px;
+  height: 30px;
+  margin: 0 auto 12px;
+  border: 3px solid #fed7aa;
+  border-top: 3px solid var(--primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+
+  </style>
+</head>
+<body>
+
+<div data-test-id="checkout-container">
+  <!-- Order Summary -->
+  <div data-test-id="order-summary">
+    <h2>Complete Payment</h2>
+    <div>
+      <span>Amount: </span>
+      <span data-test-id="order-amount">₹500.00</span>
+    </div>
+    <div>
+      <span>Order ID: </span>
+      <span data-test-id="order-id">order_123</span>
+    </div>
+  </div>
+  
+  <!-- Payment Method Selection -->
+  <div data-test-id="payment-methods">
+    <button 
+      data-test-id="method-upi" 
+      data-method="upi"
+      onclick="showUPIForm()"
+    >
+      UPI
+    </button>
+    <button 
+      data-test-id="method-card" 
+      data-method="card"
+      onclick="showCardForm()"
+    >
+      Card
+    </button>
+  </div>
+  
+  <!-- UPI Payment Form -->
+  <form data-test-id="upi-form" style="display:none">
+    <input 
+      data-test-id="vpa-input" 
+      placeholder="username@bank"
+      type="text"
+    />
+    <button data-test-id="pay-button" type="submit">
+      Pay ₹500
+    </button>
+  </form>
+  
+  <!-- Card Payment Form -->
+  <form data-test-id="card-form" style="display:none">
+    <input 
+      data-test-id="card-number-input" 
+      placeholder="Card Number"
+      type="text"
+    />
+    <input 
+      data-test-id="expiry-input" 
+      placeholder="MM/YY"
+      type="text"
+    />
+    <input 
+      data-test-id="cvv-input" 
+      placeholder="CVV"
+      type="text"
+    />
+    <input 
+      data-test-id="cardholder-name-input" 
+      placeholder="Name on Card"
+      type="text"
+    />
+    <button data-test-id="pay-button" type="submit">
+      Pay ₹500
+    </button>
+  </form>
+  
+  <!-- Processing State -->
+  <div data-test-id="processing-state" style="display:none">
+    <div class="spinner"></div>
+    <span data-test-id="processing-message">
+      Processing payment...
+    </span>
+  </div>
+  
+  <!-- Success State -->
+  <div data-test-id="success-state" style="display:none">
+    <h2>Payment Successful!</h2>
+    <div>
+      <span>Payment ID: </span>
+      <span data-test-id="payment-id">pay_123</span>
+    </div>
+    <span data-test-id="success-message">
+      Your payment has been processed successfully
+    </span>
+  </div>
+  
+  <!-- Error State -->
+  <div data-test-id="error-state" style="display:none">
+    <h2>Payment Failed</h2>
+    <span data-test-id="error-message">
+      Payment could not be processed
+    </span>
+    <button data-test-id="retry-button">Try Again</button>
+  </div>
+</div>
+
+
+<script>
+const API_BASE = "http://localhost:8000";
+
+// Elements
+const upiForm = document.querySelector('[data-test-id="upi-form"]');
+const cardForm = document.querySelector('[data-test-id="card-form"]');
+const processingState = document.querySelector('[data-test-id="processing-state"]');
+const successState = document.querySelector('[data-test-id="success-state"]');
+const errorState = document.querySelector('[data-test-id="error-state"]');
+
+const orderAmountEl = document.querySelector('[data-test-id="order-amount"]');
+const orderIdEl = document.querySelector('[data-test-id="order-id"]');
+const paymentIdEl = document.querySelector('[data-test-id="payment-id"]');
+const errorMessageEl = document.querySelector('[data-test-id="error-message"]');
+
+// Get order_id from URL
+const params = new URLSearchParams(window.location.search);
+const orderId = params.get("order_id");
+
+// --------------------
+// Load order
+// --------------------
+fetch(`${API_BASE}/checkout/orders/${orderId}`)
+  .then(res => {
+    if (!res.ok) throw new Error("Order not found");
+    return res.json();
+  })
+  .then(order => {
+    orderAmountEl.textContent = `₹${order.amount}.00`;
+    orderIdEl.textContent = order.id;
+  })
+  .catch(() => {
+    errorState.style.display = "block";
+    errorMessageEl.textContent = "Order not found";
+    // Hide other elements if needed, or just let the error state overlay/monitor
+    document.querySelector('[data-test-id="order-summary"]').style.display = "none";
+    document.querySelector('[data-test-id="payment-methods"]').style.display = "none";
+  });
+
+// --------------------
+// Form toggles
+// --------------------
+function showUPIForm() {
+  upiForm.style.display = "block";
+  cardForm.style.display = "none";
+}
+
+function showCardForm() {
+  cardForm.style.display = "block";
+  upiForm.style.display = "none";
+}
+
+// --------------------
+// Submit payment
+// --------------------
+function submitPayment(payload) {
+  upiForm.style.display = "none";
+  cardForm.style.display = "none";
+  processingState.style.display = "block";
+
+  fetch(`${API_BASE}/checkout/payments`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  })
+    .then(res => res.json())
+    .then(data => {
+      pollPaymentStatus(data.id);
+    })
+    .catch(() => {
+      processingState.style.display = "none";
+      errorState.style.display = "block";
+    });
+}
+
+// --------------------
+// UPI submit
+// --------------------
+upiForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const vpa = document.querySelector('[data-test-id="vpa-input"]').value;
+
+  submitPayment({
+    order_id: orderId,
+    method: "upi",
+    vpa,
+  });
+});
+
+// --------------------
+// Card submit
+// --------------------
+cardForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+
+  submitPayment({
+    order_id: orderId,
+    method: "card",
+    card: {
+      number: document.querySelector('[data-test-id="card-number-input"]').value,
+      expiry: document.querySelector('[data-test-id="expiry-input"]').value,
+      cvv: document.querySelector('[data-test-id="cvv-input"]').value,
+      name: document.querySelector('[data-test-id="cardholder-name-input"]').value,
+    },
+  });
+});
+
+// --------------------
+// Poll payment
+// --------------------
+function pollPaymentStatus(paymentId) {
+  const interval = setInterval(() => {
+    fetch(`${API_BASE}/api/v1/payments/${paymentId}`, {
+      headers: {
+        "X-Api-Key": "key_test_abc123",
+        "X-Api-Secret": "secret_test_xyz789",
+      },
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === "processing") return;
+
+        clearInterval(interval);
+        processingState.style.display = "none";
+
+        if (data.status === "success") {
+          successState.style.display = "block";
+          paymentIdEl.textContent = paymentId;
+        } else {
+          errorState.style.display = "block";
+          errorMessageEl.textContent =
+            data.error?.description || "Payment failed";
+        }
+      });
+  }, 1000);
+}
+</script>
+
+</body>
+</html>
